@@ -1,0 +1,54 @@
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.{js}": [
+      "npx eslint . --fix",
+      "npx prettier --write .",
+      "git add"
+    ]
+  },
+  "name": "enverx-be-developer-assignment",
+  "version": "1.0.0",
+  "description": "[![N|Solid](https://iili.io/Hi9giog.png)](https://www.enverx.com/)",
+  "main": "index.js",
+  "engines": {
+    "node": "16.20.0",
+    "npm": "8.19.4"
+  },
+  "scripts": {
+    "start": "nodemon index.js",
+    "configure-husky": "npx husky install && npx husky add .husky/pre-commit \"npx --no-install lint-staged\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-work:dthakurani/enverx-be-developer-assignment.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "helmet": "^7.0.0",
+    "pg": "^8.11.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.32.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.45.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.0",
+    "sequelize-cli": "^6.6.1"
+  }
+}
