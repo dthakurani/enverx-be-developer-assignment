@@ -35,7 +35,37 @@ const getPostById = async (req, res, next) => {
   next();
 };
 
+const findAllPosts = async (req, res, next) => {
+  const receivedData = req.data || {};
+  let resultData;
+  if (receivedData) {
+    const posts = [];
+    receivedData.posts.forEach(post => {
+      console.log(post.users.id);
+      posts.push({
+        id: post.id,
+        title: post.title,
+        content: post.content,
+        user: {
+          id: post.users.id,
+          name: `${post.users.first_name} ${post.users.last_name}`,
+          email: post.users.email
+        },
+        categories: post.categories?.map(category => ({ id: category.id, description: category.description })) || [],
+        published: post.published,
+        published_at: post.published_at,
+        created_at: post.created_at,
+        updated_at: post.updated_at
+      });
+    });
+    resultData = { total: receivedData.total, page: receivedData.page, limit: receivedData.limit, posts };
+  }
+  req.data = resultData;
+  next();
+};
+
 module.exports = {
   createPost,
-  getPostById
+  getPostById,
+  findAllPosts
 };

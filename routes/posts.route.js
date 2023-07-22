@@ -11,5 +11,6 @@ const router = Router();
 router.post('/', authenticateUser, postValidator.createPost, postController.createPost, postSerializer.createPost, genericResponse);
 router.get('/:id', postController.getPostById, postSerializer.getPostById, genericResponse);
 router.delete('/:id', postController.deletePostById, genericResponse);
+router.get('/', postValidator.findAllPosts, postController.findAllPosts, postSerializer.findAllPosts, genericResponse);
 
 module.exports = router;

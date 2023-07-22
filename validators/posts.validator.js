@@ -28,6 +28,17 @@ const createPost = (req, res, next) => {
   return validateRequest(req, res, next, schema, requestParameterTypes.body);
 };
 
+const findAllPosts = (req, res, next) => {
+  const schema = JoiInstance.object().keys({
+    sort: Joi.array().items(Joi.string().valid('created_at', 'title')),
+    categories: Joi.array().items(Joi.string().uuid()),
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(100).default(10)
+  });
+  return validateRequest(req, res, next, schema, requestParameterTypes.query);
+};
+
 module.exports = {
-  createPost
+  createPost,
+  findAllPosts
 };

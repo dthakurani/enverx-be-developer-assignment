@@ -43,8 +43,23 @@ const deletePostById = async (req, res, next) => {
   }
 };
 
+const findAllPosts = async (req, res, next) => {
+  try {
+    const payload = req.query;
+    const findAllPostsResponse = await postService.findAllPosts(payload);
+    req.statusCode = 200;
+    req.data = findAllPostsResponse;
+    next();
+  } catch (error) {
+    console.log('findAllPosts error:', error);
+    const statusCode = error.statusCode || 500;
+    commonErrorHandler(req, res, error.message, statusCode, error);
+  }
+};
+
 module.exports = {
   createPost,
   getPostById,
-  deletePostById
+  deletePostById,
+  findAllPosts
 };

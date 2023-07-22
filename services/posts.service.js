@@ -89,8 +89,59 @@ const deletePostById = async postId => {
   });
 };
 
+const findAllPosts = async payload => {
+  const { page, limit } = payload;
+  const skip = (page - 1) * limit;
+  const { sort, categories } = payload;
+
+  const whereQuery = {};
+  const order = sort?.includes('title')
+    ? [
+        ['title', 'ASC'],
+        ['created_at', 'DESC']
+      ]
+    : [
+        ['created_at', 'DESC'],
+        ['title', 'ASC']
+      ];
+  if (categories) {
+    whereQuery.id = {
+      [Op.in]: categories
+    };
+  }
+
+  const posts = await model.Post.findAll({
+    include: [
+      {
+        model: model.Category,
+        as: 'categories',
+        where: whereQuery
+      },
+      {
+        model: model.User,
+        as: 'users'
+      }
+    ],
+    order,
+    limit,
+    offset: skip
+  });
+
+  const total = await model.Post.count({
+    include: [
+      {
+        model: model.Category,
+        as: 'categories',
+        where: whereQuery
+      }
+    ]
+  });
+  return { posts, total, page, limit };
+};
+
 module.exports = {
   getPostById,
   createPost,
-  deletePostById
+  deletePostById,
+  findAllPosts
 };
