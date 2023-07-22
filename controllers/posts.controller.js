@@ -57,9 +57,26 @@ const findAllPosts = async (req, res, next) => {
   }
 };
 
+const updatePost = async (req, res, next) => {
+  try {
+    const { user } = req;
+    const payload = req.body;
+    const postId = req.params.id;
+    const updatePostResponse = await postService.updatePost(postId, payload, user);
+    req.statusCode = 200;
+    req.data = updatePostResponse;
+    next();
+  } catch (error) {
+    console.log('updatePost error:', error);
+    const statusCode = error.statusCode || 500;
+    commonErrorHandler(req, res, error.message, statusCode, error);
+  }
+};
+
 module.exports = {
   createPost,
   getPostById,
   deletePostById,
-  findAllPosts
+  findAllPosts,
+  updatePost
 };

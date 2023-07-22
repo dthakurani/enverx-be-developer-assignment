@@ -18,7 +18,7 @@ const JoiInstance = Joi.defaults(schema => {
   });
 });
 
-const createPost = (req, res, next) => {
+const createUpdatePost = (req, res, next) => {
   const schema = JoiInstance.object().keys({
     title: Joi.string().required(),
     content: Joi.string().required(),
@@ -39,6 +39,6 @@ const findAllPosts = (req, res, next) => {
 };
 
 module.exports = {
-  createPost,
+  createUpdatePost,
   findAllPosts
 };

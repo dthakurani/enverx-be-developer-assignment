@@ -40,7 +40,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      paranoid: true,
       modelName: 'PostCategories',
       tableName: 'post_categories',
       createdAt: 'created_at',

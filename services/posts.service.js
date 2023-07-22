@@ -139,9 +139,84 @@ const findAllPosts = async payload => {
   return { posts, total, page, limit };
 };
 
+const updatePost = async (postId, payload, user) => {
+  const transaction = await sequelize.transaction();
+  try {
+    const { categories, title, content, published } = payload;
+    const userPostAlreadyExists = await model.Post.findOne({
+      where: {
+        author_id: user.id,
+        id: postId
+      }
+    });
+    if (!userPostAlreadyExists) {
+      throw new CustomException('post not found', 404);
+    }
+
+    const postCategories = await model.PostCategories.findAll({
+      where: {
+        post_id: postId
+      },
+      include: ['categories']
+    });
+    const categoryIdsInDB = postCategories.map(pc => pc.category_id);
+    const categoryIdsNotInDB = categories.filter(categoryId => !categoryIdsInDB.includes(categoryId));
+    const categoryIdsToDelete = categoryIdsInDB.filter(categoryId => !categories.includes(categoryId));
+    if (categoryIdsToDelete.length > 0) {
+      await model.PostCategories.destroy(
+        {
+          where: {
+            post_id: postId,
+            category_id: {
+              [Op.in]: categoryIdsToDelete
+            }
+          }
+        },
+        { transaction }
+      );
+    }
+
+    if (categoryIdsNotInDB.length > 0) {
+      const newCategories = categoryIdsNotInDB.map(categoryId => ({
+        post_id: postId,
+        category_id: categoryId
+      }));
+
+      await model.PostCategories.bulkCreate(newCategories, { transaction });
+    }
+
+    await model.Post.update(
+      { author_id: user.id, title, content, published, published_at: published ? new Date() : null },
+      { where: { id: postId } },
+      { transaction }
+    );
+
+    const post = await model.Post.findOne({
+      where: {
+        id: postId
+      },
+      include: [
+        {
+          model: model.Category,
+          as: 'categories'
+        }
+      ]
+    });
+    await transaction.commit();
+    return post;
+  } catch (error) {
+    await transaction.rollback();
+    console.log('updatePost service: ', error);
+    await transaction.rollback();
+    const statusCode = error.statusCode || 500;
+    throw new CustomException(error.message, statusCode);
+  }
+};
+
 module.exports = {
   getPostById,
   createPost,
   deletePostById,
-  findAllPosts
+  findAllPosts,
+  updatePost
 };

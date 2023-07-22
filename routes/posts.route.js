@@ -8,9 +8,10 @@ const postSerializer = require('../serializers/posts.serializer');
 
 const router = Router();
 
-router.post('/', authenticateUser, postValidator.createPost, postController.createPost, postSerializer.createPost, genericResponse);
+router.post('/', authenticateUser, postValidator.createUpdatePost, postController.createPost, postSerializer.createPost, genericResponse);
 router.get('/:id', postController.getPostById, postSerializer.getPostById, genericResponse);
 router.delete('/:id', postController.deletePostById, genericResponse);
 router.get('/', postValidator.findAllPosts, postController.findAllPosts, postSerializer.findAllPosts, genericResponse);
+router.put('/:id', authenticateUser, postValidator.createUpdatePost, postController.updatePost, postSerializer.getPostById, genericResponse);
 
 module.exports = router;
