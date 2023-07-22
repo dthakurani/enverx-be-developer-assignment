@@ -8,7 +8,7 @@ module.exports = {
     try {
       const users = [];
 
-      // Generate 4 fake users
+      // Generate 5 fake users
       for (let i = 0; i < 5; i += 1) {
         const firstName = faker.person.firstName();
         const lastName = faker.person.lastName();
