@@ -18,9 +18,10 @@ const commonErrorHandler = async (req, res, message, statusCode = 500, error = n
   res.status(statusCode).json(response);
 };
 
-const CustomException = function (message) {
+const CustomException = function (message, statusCode) {
   const error = new Error(message);
-  error.statusCode = 422;
+  console.log(error);
+  error.statusCode = statusCode || 422;
   return error;
 };
 CustomException.prototype = Object.create(Error.prototype);
