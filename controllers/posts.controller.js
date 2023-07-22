@@ -16,6 +16,21 @@ const createPost = async (req, res, next) => {
   }
 };
 
+const getPostById = async (req, res, next) => {
+  try {
+    const postId = req.params.id;
+    const getPostByIdResponse = await postService.getPostById(postId);
+    req.statusCode = 200;
+    req.data = getPostByIdResponse;
+    next();
+  } catch (error) {
+    console.log('getPostById error:', error);
+    const statusCode = error.statusCode || 500;
+    commonErrorHandler(req, res, error.message, statusCode, error);
+  }
+};
+
 module.exports = {
-  createPost
+  createPost,
+  getPostById
 };

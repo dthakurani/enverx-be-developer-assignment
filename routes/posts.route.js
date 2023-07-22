@@ -9,5 +9,6 @@ const postSerializer = require('../serializers/posts.serializer');
 const router = Router();
 
 router.post('/', authenticateUser, postValidator.createPost, postController.createPost, postSerializer.createPost, genericResponse);
+router.get('/:id', postController.getPostById, postSerializer.getPostById, genericResponse);
 
 module.exports = router;

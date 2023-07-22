@@ -42,7 +42,7 @@ const createPost = async (payload, user) => {
     const post = await model.Post.create(createPostPayload, { transaction });
     const postCategoryMapping = categories.map(category => ({ post_id: post.dataValues.id, category_id: category }));
 
-    await model.PostCategories.bulkCreate({ postCategoryMapping }, { transaction });
+    await model.PostCategories.bulkCreate(postCategoryMapping, { transaction });
 
     await transaction.commit();
     return { post, categoriesFound };
@@ -54,6 +54,25 @@ const createPost = async (payload, user) => {
   }
 };
 
+const getPostById = async postId => {
+  const postAlreadyExists = await model.Post.findOne({
+    where: {
+      id: postId
+    },
+    include: [
+      {
+        model: model.Category,
+        as: 'categories'
+      }
+    ]
+  });
+  if (!postAlreadyExists) {
+    throw new CustomException('post not found', 404);
+  }
+  return postAlreadyExists;
+};
+
 module.exports = {
+  getPostById,
   createPost
 };

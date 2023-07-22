@@ -16,6 +16,26 @@ const createPost = async (req, res, next) => {
   next();
 };
 
+const getPostById = async (req, res, next) => {
+  const receivedData = req.data || {};
+  let resultData;
+  if (receivedData) {
+    resultData = {
+      id: receivedData.id,
+      title: receivedData.title,
+      content: receivedData.content,
+      categories: receivedData.categories?.map(category => ({ id: category.id, description: category.description })) || [],
+      published: receivedData.published,
+      published_at: receivedData.published_at,
+      created_at: receivedData.created_at,
+      updated_at: receivedData.updated_at
+    };
+  }
+  req.data = resultData;
+  next();
+};
+
 module.exports = {
-  createPost
+  createPost,
+  getPostById
 };
