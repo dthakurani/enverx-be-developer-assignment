@@ -72,7 +72,25 @@ const getPostById = async postId => {
   return postAlreadyExists;
 };
 
+const deletePostById = async postId => {
+  const postAlreadyExists = await model.Post.findOne({
+    where: {
+      id: postId
+    }
+  });
+  if (!postAlreadyExists) {
+    throw new CustomException('post not found', 404);
+  }
+
+  await model.Post.destroy({
+    where: {
+      id: postId
+    }
+  });
+};
+
 module.exports = {
   getPostById,
-  createPost
+  createPost,
+  deletePostById
 };

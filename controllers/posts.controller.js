@@ -30,7 +30,21 @@ const getPostById = async (req, res, next) => {
   }
 };
 
+const deletePostById = async (req, res, next) => {
+  try {
+    const postId = req.params.id;
+    await postService.deletePostById(postId);
+    req.statusCode = 204;
+    next();
+  } catch (error) {
+    console.log('deletePostById error:', error);
+    const statusCode = error.statusCode || 500;
+    commonErrorHandler(req, res, error.message, statusCode, error);
+  }
+};
+
 module.exports = {
   createPost,
-  getPostById
+  getPostById,
+  deletePostById
 };
