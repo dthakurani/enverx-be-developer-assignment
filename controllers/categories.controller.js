@@ -4,7 +4,7 @@ const { commonErrorHandler } = require('../utilities/error-handler');
 const findAllCategory = async (req, res, next) => {
   try {
     const payload = req.query;
-    const findAllCategoryResponse = await categoryService.findAll(payload);
+    const findAllCategoryResponse = await categoryService.findAllCategory(payload);
     req.statusCode = 200;
     req.data = findAllCategoryResponse;
     next();

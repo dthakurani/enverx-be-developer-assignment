@@ -1,6 +1,6 @@
 const model = require('../models');
 
-const findAll = async payload => {
+const findAllUser = async payload => {
   const { page, limit } = payload;
   const skip = (page - 1) * limit;
 
@@ -10,5 +10,5 @@ const findAll = async payload => {
 };
 
 module.exports = {
-  findAll
+  findAllUser
 };

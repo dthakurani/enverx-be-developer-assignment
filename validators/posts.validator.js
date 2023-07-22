@@ -23,7 +23,7 @@ const createUpdatePost = (req, res, next) => {
     title: Joi.string().required(),
     content: Joi.string().required(),
     published: Joi.boolean().default('false'),
-    categories: Joi.array().items(Joi.string().uuid().required())
+    categories: Joi.array().items(Joi.string().uuid().required()).required()
   });
   return validateRequest(req, res, next, schema, requestParameterTypes.body);
 };

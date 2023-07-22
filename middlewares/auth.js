@@ -1,12 +1,12 @@
 const models = require('../models');
-const { CustomException } = require('../utilities/error-handler');
+const { CustomException, commonErrorHandler } = require('../utilities/error-handler');
 
 const authenticateUser = async (req, res, next) => {
   try {
-    const header = req.headers.authorization;
+    const header = req.headers?.authorization;
     const userId = header ? header : null;
     if (!userId) {
-      CustomException('Access denied', 401);
+      throw new CustomException('Access denied', 401);
     }
     const user = await models.User.findOne({
       where: {
@@ -19,7 +19,9 @@ const authenticateUser = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    CustomException(error.message, 500);
+    console.log('authenticateUser error:', error);
+    const statusCode = error.statusCode || 500;
+    commonErrorHandler(req, res, error.message, statusCode, error);
   }
 };
 

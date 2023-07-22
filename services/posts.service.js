@@ -15,7 +15,7 @@ const createPost = async (payload, user) => {
       }
     });
     if (userPostAlreadyExists) {
-      throw new CustomException('your post with this  title already exist', 400);
+      throw new CustomException('your post with this title already exist', 404);
     }
 
     const categoriesFound = await model.Category.findAll({
@@ -28,7 +28,7 @@ const createPost = async (payload, user) => {
     const categoryIdsFound = categoriesFound.map(category => category.id);
     const categoryIdsNotFound = categories.filter(id => !categoryIdsFound.includes(id));
     if (categoryIdsNotFound.length > 0) {
-      throw new CustomException('categories not found', 400);
+      throw new CustomException('categories not found', 404);
     }
 
     const createPostPayload = {
@@ -47,8 +47,8 @@ const createPost = async (payload, user) => {
     await transaction.commit();
     return { post, categoriesFound };
   } catch (error) {
-    console.log('createPost service: ', error);
     await transaction.rollback();
+    console.log('createPost service: ', error);
     const statusCode = error.statusCode || 500;
     throw new CustomException(error.message, statusCode);
   }
@@ -153,6 +153,19 @@ const updatePost = async (postId, payload, user) => {
       throw new CustomException('post not found', 404);
     }
 
+    const categoriesFound = await model.Category.findAll({
+      where: {
+        id: {
+          [Op.in]: categories
+        }
+      }
+    });
+    const categoryIdsFound = categoriesFound.map(category => category.id);
+    const categoryIdsNotFound = categories.filter(id => !categoryIdsFound.includes(id));
+    if (categoryIdsNotFound.length > 0) {
+      throw new CustomException('categories not found', 404);
+    }
+
     const postCategories = await model.PostCategories.findAll({
       where: {
         post_id: postId
@@ -207,7 +220,6 @@ const updatePost = async (postId, payload, user) => {
   } catch (error) {
     await transaction.rollback();
     console.log('updatePost service: ', error);
-    await transaction.rollback();
     const statusCode = error.statusCode || 500;
     throw new CustomException(error.message, statusCode);
   }

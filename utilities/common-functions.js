@@ -26,7 +26,7 @@ const validateRequest = (req, res, next, schema, requestParameterType) => {
   const { details } = error;
   const message = details.map(i => i.message).join(',');
 
-  return commonErrorHandler(req, res, message, 422);
+  return commonErrorHandler(req, res, message, 400);
 };
 
 module.exports = {

@@ -4,7 +4,7 @@ const { commonErrorHandler } = require('../utilities/error-handler');
 const findAllUser = async (req, res, next) => {
   try {
     const payload = req.query;
-    const findAllUserResponse = await userService.findAll(payload);
+    const findAllUserResponse = await userService.findAllUser(payload);
     req.statusCode = 200;
     req.data = findAllUserResponse;
     next();
